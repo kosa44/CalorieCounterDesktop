@@ -49,7 +49,7 @@ public class FoodDatabaseSQLite implements FoodDatabaseInterface {
     @Override
     public void addToDatabase(Foodstuff food) throws SQLException {
         try (PreparedStatement pstmt = conn.prepareStatement(
-                "insert into CalorieCounterProducts(name, protein, fats, carbohydrates, calories, grams) values(?,?,?,?,?,?);")) {
+                "INSERT INTO CalorieCounterProducts(name, protein, fats, carbohydrates, calories, grams) VALUES (?,?,?,?,?,?);")) {
             conn.setAutoCommit(false);
             pstmt.setString(1, food.getName());
             pstmt.setDouble(2, food.getProtein());
@@ -86,7 +86,7 @@ public class FoodDatabaseSQLite implements FoodDatabaseInterface {
                 System.out.println("Building the CalorieCounterProducts table with pre-populated values.");
                 // need to build the table
                 Statement state2 = conn.createStatement();
-                state2.executeUpdate("create table CalorieCounterProducts(id integer," + "name varchar(60),"
+                state2.executeUpdate("CREATE TABLE CalorieCounterProducts(id integer," + "name varchar(60),"
                         + "protein real," + "fats real," + "carbohydrates real," + "calories real," + "grams real,"
                         + "primary key (id));");
 
@@ -95,7 +95,7 @@ public class FoodDatabaseSQLite implements FoodDatabaseInterface {
                 foodArray.createDatabase();
                 for (int i = 0; i < foodArray.getData().size(); i++) {
                     PreparedStatement prep = conn.prepareStatement(
-                            "insert into CalorieCounterProducts(name, protein, fats, carbohydrates, calories, grams) values(?,?,?,?,?,?);");
+                            "INSERT INTO CalorieCounterProducts(name, protein, fats, carbohydrates, calories, grams) VALUES (?,?,?,?,?,?);");
                     prep.setString(1, foodArray.getFoodstuff(i).getName());
                     prep.setDouble(2, foodArray.getFoodstuff(i).getProtein());
                     prep.setDouble(3, foodArray.getFoodstuff(i).getFat());
