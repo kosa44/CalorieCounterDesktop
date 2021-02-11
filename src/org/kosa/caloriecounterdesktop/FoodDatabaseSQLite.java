@@ -47,16 +47,23 @@ public class FoodDatabaseSQLite implements FoodDatabaseInterface {
     }
 
     @Override
-    public void addToDatabase(Foodstuff food) throws ClassNotFoundException, SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(
-                "insert into CalorieCounterProducts(name, protein, fats, carbohydrates, calories, grams) values(?,?,?,?,?,?);");
-        pstmt.setString(1, food.getName());
-        pstmt.setDouble(2, food.getProtein());
-        pstmt.setDouble(3, food.getFat());
-        pstmt.setDouble(4, food.getCarbohydrates());
-        pstmt.setDouble(5, food.getCalories());
-        pstmt.setDouble(6, food.getGrams());
-        pstmt.execute();
+    public void addToDatabase(Foodstuff food) throws SQLException {
+        try (PreparedStatement pstmt = conn.prepareStatement(
+                "insert into CalorieCounterProducts(name, protein, fats, carbohydrates, calories, grams) values(?,?,?,?,?,?);")) {
+            conn.setAutoCommit(false);
+            pstmt.setString(1, food.getName());
+            pstmt.setDouble(2, food.getProtein());
+            pstmt.setDouble(3, food.getFat());
+            pstmt.setDouble(4, food.getCarbohydrates());
+            pstmt.setDouble(5, food.getCalories());
+            pstmt.setDouble(6, food.getGrams());
+            pstmt.execute();
+            conn.commit();
+        } catch (SQLException e) {
+            conn.rollback();
+            System.out.println("Transaction is being rolled back");
+            e.printStackTrace();
+        }
     }
 
     @Override
