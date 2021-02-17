@@ -83,44 +83,45 @@ public class FoodDatabaseSQLite implements FoodDatabaseInterface {
     }
 
     public void initialize() throws SQLException {
-        if (!hasData) {
-            hasData = true;
-            // check for database table
-            Statement state = conn.createStatement();
-            ResultSet res = state.executeQuery(
-                    "SELECT name FROM sqlite_master WHERE type='table' AND name='CalorieCounterProducts'");
-            if (!res.next()) {
-                System.out.println("Building the CalorieCounterProducts table with pre-populated values.");
-                // need to build the table
-                try (Statement state2 = conn.createStatement()) {
-                    state2.executeUpdate("CREATE TABLE CalorieCounterProducts(id integer," + "name varchar(60),"
-                            + "protein real," + "fats real," + "carbohydrates real," + "calories real," + "grams real,"
-                            + "primary key (id));");
-                    conn.commit();
+        if (hasData) {
+            return;
+        }
+        hasData = true;
+        // check for database table
+        Statement state = conn.createStatement();
+        ResultSet res = state.executeQuery(
+                "SELECT name FROM sqlite_master WHERE type='table' AND name='CalorieCounterProducts'");
+        if (!res.next()) {
+            System.out.println("Building the CalorieCounterProducts table with pre-populated values.");
+            // need to build the table
+            try (Statement state2 = conn.createStatement()) {
+                state2.executeUpdate("CREATE TABLE CalorieCounterProducts(id integer," + "name varchar(60),"
+                        + "protein real," + "fats real," + "carbohydrates real," + "calories real," + "grams real,"
+                        + "primary key (id));");
+                conn.commit();
+            } catch (SQLException e) {
+                conn.rollback();
+                System.out.println("Transaction is being rolled back");
+                e.printStackTrace();
+            }
+
+            // inserting data
+            ArrayListFoodData foodArray = new ArrayListFoodData();
+            foodArray.createDatabase();
+            for (int i = 0; i < foodArray.getData().size(); i++) {
+                try (PreparedStatement prep = conn.prepareStatement(
+                        "INSERT INTO CalorieCounterProducts(name, protein, fats, carbohydrates, calories, grams) VALUES (?,?,?,?,?,?);")) {
+                    prep.setString(1, foodArray.getFoodstuff(i).getName());
+                    prep.setDouble(2, foodArray.getFoodstuff(i).getProtein());
+                    prep.setDouble(3, foodArray.getFoodstuff(i).getFat());
+                    prep.setDouble(4, foodArray.getFoodstuff(i).getCarbohydrates());
+                    prep.setDouble(5, foodArray.getFoodstuff(i).getCalories());
+                    prep.setDouble(6, foodArray.getFoodstuff(i).getGrams());
+                    prep.execute();
                 } catch (SQLException e) {
                     conn.rollback();
                     System.out.println("Transaction is being rolled back");
                     e.printStackTrace();
-                }
-
-                // inserting data
-                ArrayListFoodData foodArray = new ArrayListFoodData();
-                foodArray.createDatabase();
-                for (int i = 0; i < foodArray.getData().size(); i++) {
-                    try (PreparedStatement prep = conn.prepareStatement(
-                            "INSERT INTO CalorieCounterProducts(name, protein, fats, carbohydrates, calories, grams) VALUES (?,?,?,?,?,?);")) {
-                        prep.setString(1, foodArray.getFoodstuff(i).getName());
-                        prep.setDouble(2, foodArray.getFoodstuff(i).getProtein());
-                        prep.setDouble(3, foodArray.getFoodstuff(i).getFat());
-                        prep.setDouble(4, foodArray.getFoodstuff(i).getCarbohydrates());
-                        prep.setDouble(5, foodArray.getFoodstuff(i).getCalories());
-                        prep.setDouble(6, foodArray.getFoodstuff(i).getGrams());
-                        prep.execute();
-                    } catch (SQLException e) {
-                        conn.rollback();
-                        System.out.println("Transaction is being rolled back");
-                        e.printStackTrace();
-                    }
                 }
             }
         }
