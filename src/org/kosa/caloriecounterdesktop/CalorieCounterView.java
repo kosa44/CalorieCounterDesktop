@@ -6,24 +6,12 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.Insets;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.text.DecimalFormat;
 
-import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -36,10 +24,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.JTextPane;
-import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.table.DefaultTableModel;
@@ -52,7 +37,7 @@ public class CalorieCounterView {
     private JMenuBar menuBar;
     private JMenu menuFile;
     private JMenu menuProducts;
-    // private JMenu menuOptions;
+
     private JMenuItem saveSession;
     private JMenuItem loadSession;
     private JMenuItem removeSession;
@@ -80,9 +65,9 @@ public class CalorieCounterView {
     public CalorieCounterView() {
 
         viewFrame = new JFrame("Schabowy 4 Ever :)");
-        URL url = CalorieCounterMain.class.getResource("/resources/steak-rare.png");
-        ImageIcon img = new ImageIcon(url);
-        viewFrame.setIconImage(img.getImage());
+//        URL url = CalorieCounterMain.class.getResource("/resources/steak-rare.png");
+//        ImageIcon img = new ImageIcon(url);
+//        viewFrame.setIconImage(img.getImage());
 
         viewPanel = new JPanel(new GridBagLayout());
 
@@ -143,23 +128,23 @@ public class CalorieCounterView {
         });
         c.weightx = 0.1;
         c.weighty = 0.0;
-        // c.fill = GridBagConstraints.HORIZONTAL;
+
         c.gridx = 1;
         c.gridy = 1;
         c.gridheight = 3;
         buttonsPanel.add(howManyGrams, c);
 
         addButton = new JButton("Dodaj");
-        // c.fill = GridBagConstraints.HORIZONTAL;
+
         buttonsPanel.add(addButton);
 
         removeButton = new JButton("Usuń");
-        // c.fill = GridBagConstraints.HORIZONTAL;
+
         buttonsPanel.add(removeButton);
 
         clearButton = new JButton("Wyczyść");
         clearButton.setSize(10, 5);
-        // c.fill = GridBagConstraints.HORIZONTAL;
+
         buttonsPanel.add(clearButton);
 
         chooseProductScroll = new JScrollPane();
@@ -200,9 +185,6 @@ public class CalorieCounterView {
 
         sumTableModel = new DefaultTableModel(columns, 0) {
 
-            /**
-             *
-             */
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -263,8 +245,6 @@ public class CalorieCounterView {
 
         removeProduct = new JMenuItem("Usuń produkt");
         menuProducts.add(removeProduct);
-        // menuOptions = new JMenu(language.getOptions());
-        // menuBar.add(menuOptions);
 
         return menuBar;
     }
@@ -272,9 +252,7 @@ public class CalorieCounterView {
     public JTable createSessionTable() {
         String[] columns = { "Produkt", "Białko", "Tłuszcz", "Węglowodany", "Kalorie", "Gram" };
         sessionTableModel = new DefaultTableModel(columns, 0) {
-            /**
-             *
-             */
+
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -334,8 +312,7 @@ public class CalorieCounterView {
     }
 
     public String getSelectedItem() {
-        String s = list.getSelectedValue();
-        return s;
+        return list.getSelectedValue();
     }
 
     public DefaultTableModel getSessionTableModel() {
