@@ -6,13 +6,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 
 public class CalorieCounterModel implements CalorieCounterModelInterface {
     private FoodDatabaseInterface foodstuffsData;
     private Connection sessionNames;
     private String sessionNamesURL = "jdbc:sqlite:SessionNames.db";
-    private ArrayList observers = new ArrayList();
     private static boolean hasData = false;
 
     public CalorieCounterModel(FoodDatabaseInterface foodstuffsData) {
@@ -24,15 +22,15 @@ public class CalorieCounterModel implements CalorieCounterModelInterface {
         }
         try {
             sessionNames = DriverManager.getConnection(sessionNamesURL);
+            // check for database table
             if (!hasData) {
                 hasData = true;
-                // check for database table
                 Statement state = sessionNames.createStatement();
                 ResultSet res = state
                         .executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='SessionNames'");
                 if (!res.next()) {
-                    System.out.println("Building the SessionNames table with pre-populated values.");
                     // need to build the table
+                    System.out.println("Building the SessionNames table with pre-populated values.");
                     Statement state2 = sessionNames.createStatement();
                     state2.executeUpdate(
                             "create table SessionNames(id integer," + "name varchar(60)," + "primary key (id));");
@@ -49,18 +47,6 @@ public class CalorieCounterModel implements CalorieCounterModelInterface {
 
     public Foodstuff getFoodstuff(int i) {
         return foodstuffsData.getFoodstuff(i);
-    }
-
-    public void registerObserver(CalorieCounterObserver o) {
-
-    }
-
-    public void removeObserver(CalorieCounterObserver o) {
-
-    }
-
-    public void notifyObservers() {
-
     }
 
     @Override
