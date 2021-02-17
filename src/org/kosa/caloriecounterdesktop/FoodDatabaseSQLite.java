@@ -67,12 +67,12 @@ public class FoodDatabaseSQLite implements FoodDatabaseInterface {
     }
 
     @Override
-    public void removeFromDatabase(String s) throws SQLException {
+    public void removeFromDatabase(String name) throws SQLException {
         String sql = "DELETE FROM CalorieCounterProducts WHERE name = ?";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             conn.setAutoCommit(false);
-            pstmt.setString(1, s);
+            pstmt.setString(1, name);
             pstmt.execute();
             conn.commit();
         } catch (SQLException e) {
