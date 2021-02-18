@@ -80,5 +80,16 @@ public class Foodstuff implements Comparable<Foodstuff>, Serializable {
         }
         return 0;
     }
+
+    @Override
+    public String toString() {
+        return "Foodstuff{" +
+                "name='" + name + '\'' +
+                ", protein=" + protein +
+                ", fat=" + fat +
+                ", carbohydrates=" + carbohydrates +
+                ", calories=" + calories +
+                '}';
+    }
 }
 
