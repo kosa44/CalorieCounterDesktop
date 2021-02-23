@@ -1,4 +1,8 @@
-package org.kosa.caloriecounterdesktop;
+package org.kosa.caloriecounterdesktop.model;
+
+import org.kosa.caloriecounterdesktop.model.ArrayListFoodData;
+import org.kosa.caloriecounterdesktop.model.FoodDatabaseInterface;
+import org.kosa.caloriecounterdesktop.model.Foodstuff;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -119,26 +123,26 @@ public class FoodDatabaseSQLite implements FoodDatabaseInterface {
         // inserting data
         ArrayListFoodData foodArray = new ArrayListFoodData();
         foodArray.createDatabase();
-        return;
-//        for (int i = 0; i < foodArray.getData().size(); i++) {
-//            try (PreparedStatement prep = conn.prepareStatement(
-//                    "INSERT INTO CalorieCounterProducts(name, protein, fats, carbohydrates, calories, grams) VALUES (?,?,?,?,?,?);")) {
-//                conn.setAutoCommit(false);
-//                prep.setString(1, foodArray.getFoodstuff(i).getName());
-//                prep.setDouble(2, foodArray.getFoodstuff(i).getProtein());
-//                prep.setDouble(3, foodArray.getFoodstuff(i).getFat());
-//                prep.setDouble(4, foodArray.getFoodstuff(i).getCarbohydrates());
-//                prep.setDouble(5, foodArray.getFoodstuff(i).getCalories());
-//                prep.setDouble(6, foodArray.getFoodstuff(i).getGrams());
-//                prep.execute();
-//                conn.commit();
-//            } catch (SQLException e) {
-//                conn.rollback();
-//                System.out.println("Transaction is being rolled back");
-//                e.printStackTrace();
-//            }
-
-//        }
+        boolean formerAutoCommitMode = conn.getAutoCommit();
+        for (int i = 0; i < foodArray.getData().size(); i++) {
+            try (PreparedStatement prep = conn.prepareStatement(
+                    "INSERT INTO CalorieCounterProducts(name, protein, fats, carbohydrates, calories, grams) VALUES (?,?,?,?,?,?);")) {
+                conn.setAutoCommit(false);
+                prep.setString(1, foodArray.getFoodstuff(i).getName());
+                prep.setDouble(2, foodArray.getFoodstuff(i).getProtein());
+                prep.setDouble(3, foodArray.getFoodstuff(i).getFat());
+                prep.setDouble(4, foodArray.getFoodstuff(i).getCarbohydrates());
+                prep.setDouble(5, foodArray.getFoodstuff(i).getCalories());
+                prep.setDouble(6, foodArray.getFoodstuff(i).getGrams());
+                prep.execute();
+                conn.commit();
+            } catch (SQLException e) {
+                conn.rollback();
+                System.out.println("Transaction is being rolled back");
+                e.printStackTrace();
+            }
+        }
+        conn.setAutoCommit(formerAutoCommitMode);
     }
 
     @Override
