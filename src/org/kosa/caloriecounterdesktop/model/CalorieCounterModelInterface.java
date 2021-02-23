@@ -4,12 +4,6 @@ import java.sql.ResultSet;
 
 public interface CalorieCounterModelInterface {
 
-    public void registerObserver(CalorieCounterObserver o);
-
-    public void removeObserver(CalorieCounterObserver o);
-
-    public void notifyObservers();
-
     public FoodDatabaseInterface getData();
 
     public void addProduct(Foodstuff food);

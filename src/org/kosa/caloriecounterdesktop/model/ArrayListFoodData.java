@@ -1,9 +1,6 @@
 package org.kosa.caloriecounterdesktop;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -16,22 +13,25 @@ import com.google.gson.reflect.TypeToken;
 public class ArrayListFoodData {
     private static ArrayList<Foodstuff> foodData;
 
-    public void serializeProductsToJson(){
+    public void serializeProductsToJson(Foodstuff[] food){
         try (Writer writer = new FileWriter("C:/Users/lenovo/IdeaProjects/CalorieCounterDesktop/resources/initialProducts.json")) {
-            Type foodstuffArrayList = new TypeToken<ArrayList<Foodstuff>>(){}.getType();
+//            Type foodstuffArrayList = new TypeToken<ArrayList<Foodstuff>>(){}.getType();
+//            Gson gson = new GsonBuilder().create();
+//            gson.toJson(foodData, writer);
             Gson gson = new GsonBuilder().create();
-            gson.toJson(foodData, foodstuffArrayList, writer);
+            gson.toJson(food, writer);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public ArrayList<Foodstuff> deserializeProductsFromJson() {
+    public Foodstuff[] deserializeProductsFromJson() {
         try {
             Gson gson = new GsonBuilder().create();
-            Type foodstuffArrayList = new TypeToken<ArrayList<Foodstuff>>(){}.getType();
-            return gson.fromJson("resources/initialProducts.json", foodstuffArrayList);
-        } catch (JsonParseException e) {
+            Reader reader = new FileReader("C:/Users/lenovo/IdeaProjects/CalorieCounterDesktop/resources/initialProducts.json");
+            Type foodstuffArray = new TypeToken<Foodstuff[]>(){}.getType();
+            return gson.fromJson(reader, foodstuffArray);
+        } catch (JsonParseException | FileNotFoundException e) {
             System.out.println("Couldn't deserialize from json file");
             e.printStackTrace();
         }
@@ -39,10 +39,11 @@ public class ArrayListFoodData {
     }
 
     public void createDatabase() {
-    foodData = deserializeProductsFromJson();
+    Foodstuff[] array = deserializeProductsFromJson();
+    System.out.println("Array contains: "+array[0].toString());
 //        foodData = new ArrayList<Foodstuff>();
 //
-//        Foodstuff apple = new Foodstuff("Jabłko", 0.40, 0.40, 12.10, 46, 100);
+        Foodstuff apple = new Foodstuff("Jabłko", 0.40, 0.40, 12.10, 46, 100);
 //        Foodstuff cheeseGouda = new Foodstuff("Ser Gouda tłusty", 27.9, 22.9, 0.1, 316, 100);
 //        Foodstuff cheeseMozarella = new Foodstuff("Ser Mozarella tłusty", 20.0, 16.0, 0.0, 224, 100);
 //        Foodstuff chickenBreast = new Foodstuff("Kurczak, pierś bez skóry", 21.5, 13.0, 0.0, 100, 100);
@@ -61,7 +62,8 @@ public class ArrayListFoodData {
 //                oatmeal, porkChop, porkNeck, potatoes, riceWhite, tunaInOil, wholeEgg };
 //        sortDatabaseByName(array);
 //            foodData.addAll(Arrays.asList(array));
-//        serializeProductsToJson();
+//        Foodstuff[] array = new Foodstuff[]{apple};
+//        serializeProductsToJson(array);
     }
 
     public List<Foodstuff> getData() {

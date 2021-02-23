@@ -89,6 +89,7 @@ public class Foodstuff implements Comparable<Foodstuff>, Serializable {
                 ", fat=" + fat +
                 ", carbohydrates=" + carbohydrates +
                 ", calories=" + calories +
+                ", grams=" + grams +
                 '}';
     }
 }
