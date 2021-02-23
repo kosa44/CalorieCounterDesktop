@@ -1,9 +1,5 @@
 package org.kosa.caloriecounterdesktop.model;
 
-import org.kosa.caloriecounterdesktop.model.ArrayListFoodData;
-import org.kosa.caloriecounterdesktop.model.FoodDatabaseInterface;
-import org.kosa.caloriecounterdesktop.model.Foodstuff;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -23,20 +19,20 @@ public class FoodDatabaseSQLite implements FoodDatabaseInterface {
         }
     }
 
-    public ResultSet getName(String name) throws ClassNotFoundException, SQLException {
+    public ResultSet getName(String name) throws SQLException {
         Statement state = conn.createStatement();
         ResultSet res = state.executeQuery("SELECT name FROM CalorieCounterProducts WHERE name = " + "'" + name + "'");
         return res;
     }
 
-    public ResultSet getProtein(String name) throws ClassNotFoundException, SQLException {
+    public ResultSet getProtein(String name) throws SQLException {
         Statement state = conn.createStatement();
         ResultSet res = state
                 .executeQuery("SELECT protein FROM CalorieCounterProducts WHERE name = " + "'" + name + "'");
         return res;
     }
 
-    public ResultSet displayProducts() throws SQLException, ClassNotFoundException {
+    public ResultSet displayProducts() throws SQLException {
         Statement state = conn.createStatement();
         ResultSet res = state
                 .executeQuery("SELECT name, protein, fats, carbohydrates, calories, grams FROM CalorieCounterProducts");
@@ -86,9 +82,9 @@ public class FoodDatabaseSQLite implements FoodDatabaseInterface {
     }
 
     public void initialize() throws SQLException {
-//        if (hasData()) {
-//            return;
-//        }
+        if (hasData()) {
+            return;
+        }
         // check for database table
         ArrayListFoodData foodArray = new ArrayListFoodData();
         foodArray.createDatabase();
@@ -105,7 +101,7 @@ public class FoodDatabaseSQLite implements FoodDatabaseInterface {
                         + "protein real," + "fats real," + "carbohydrates real," + "calories real," + "grams real,"
                         + "primary key (id));");
                 conn.commit();
-                if (hasData() == false) {
+                if (!hasData()) {
                     insertInitialData();
                 }
             } catch (SQLException e) {
@@ -114,7 +110,7 @@ public class FoodDatabaseSQLite implements FoodDatabaseInterface {
                 e.printStackTrace();
             }
         }
-        if (hasData() == false) {
+        if (!hasData()) {
             insertInitialData();
         }
     }
