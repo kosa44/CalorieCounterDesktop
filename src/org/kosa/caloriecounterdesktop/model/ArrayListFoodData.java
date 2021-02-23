@@ -11,9 +11,10 @@ import com.google.gson.reflect.TypeToken;
 
 public class ArrayListFoodData {
     private static ArrayList<Foodstuff> foodData;
+    private final static String initialProductsFileDir = "resources/initialProducts.json";
 
-    public void serializeProductsToJson(Foodstuff[] food) {
-        try (Writer writer = new FileWriter("C:/Users/lenovo/IdeaProjects/CalorieCounterDesktop/resources/initialProducts.json")) {
+    public void serializeProductsToJson(Foodstuff[] food, String filePath) {
+        try (Writer writer = new FileWriter(filePath)) {
             Gson gson = new GsonBuilder().create();
             gson.toJson(food, writer);
         } catch (IOException e) {
@@ -21,10 +22,10 @@ public class ArrayListFoodData {
         }
     }
 
-    public Foodstuff[] deserializeProductsFromJson() {
+    public Foodstuff[] deserializeProductsFromJson(String filePath) {
         try {
             Gson gson = new GsonBuilder().create();
-            Reader reader = new FileReader("C:/Users/lenovo/IdeaProjects/CalorieCounterDesktop/resources/initialProducts.json");
+            Reader reader = new FileReader(filePath);
             Type foodstuffArray = new TypeToken<Foodstuff[]>() {
             }.getType();
             return gson.fromJson(reader, foodstuffArray);
@@ -36,7 +37,7 @@ public class ArrayListFoodData {
     }
 
     public void createDatabase() {
-        Foodstuff[] array = deserializeProductsFromJson();
+        Foodstuff[] array = deserializeProductsFromJson(initialProductsFileDir);
         foodData = new ArrayList<Foodstuff>();
         foodData.addAll(Arrays.asList(array));
     }
