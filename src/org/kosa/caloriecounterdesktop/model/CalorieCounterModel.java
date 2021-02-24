@@ -1,4 +1,4 @@
-package org.kosa.caloriecounterdesktop;
+package org.kosa.caloriecounterdesktop.model;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -10,7 +10,6 @@ import java.sql.Statement;
 public class CalorieCounterModel implements CalorieCounterModelInterface {
     private FoodDatabaseInterface foodstuffsData;
     private Connection sessionNames;
-    private String sessionNamesURL = "jdbc:sqlite:SessionNames.db";
     private static boolean hasData = false;
 
     public CalorieCounterModel(FoodDatabaseInterface foodstuffsData) {
@@ -21,6 +20,7 @@ public class CalorieCounterModel implements CalorieCounterModelInterface {
             e2.printStackTrace();
         }
         try {
+            String sessionNamesURL = "jdbc:sqlite:SessionNames.db";
             sessionNames = DriverManager.getConnection(sessionNamesURL);
             // check for database table
             if (!hasData) {
@@ -33,7 +33,7 @@ public class CalorieCounterModel implements CalorieCounterModelInterface {
                     System.out.println("Building the SessionNames table with pre-populated values.");
                     Statement state2 = sessionNames.createStatement();
                     state2.executeUpdate(
-                            "create table SessionNames(id integer," + "name varchar(60)," + "primary key (id));");
+                            "CREATE TABLE SessionNames(id integer," + "name varchar(60)," + "primary key (id));");
                 }
             }
         } catch (SQLException e1) {
@@ -68,10 +68,10 @@ public class CalorieCounterModel implements CalorieCounterModelInterface {
     }
 
     @Override
-    public void addSessionName(String s) {
+    public void addSessionName(String name) {
         try {
-            PreparedStatement pstmt = sessionNames.prepareStatement("INSERT into SessionNames(name) values(?);");
-            pstmt.setString(1, s);
+            PreparedStatement pstmt = sessionNames.prepareStatement("INSERT INTO SessionNames(name) values(?);");
+            pstmt.setString(1, name);
             pstmt.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -82,8 +82,7 @@ public class CalorieCounterModel implements CalorieCounterModelInterface {
     public ResultSet getSessionNames() {
         try {
             PreparedStatement stmt = sessionNames.prepareStatement("SELECT * FROM SessionNames");
-            ResultSet rs = stmt.executeQuery();
-            return rs;
+            return stmt.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -91,10 +90,10 @@ public class CalorieCounterModel implements CalorieCounterModelInterface {
     }
 
     @Override
-    public void removeSessionName(String s) {
+    public void removeSessionName(String name) {
         try {
-            PreparedStatement pstmt = sessionNames.prepareStatement("DELETE FROM SessionNames where name = ?");
-            pstmt.setString(1, s);
+            PreparedStatement pstmt = sessionNames.prepareStatement("DELETE FROM SessionNames WHERE name = ?");
+            pstmt.setString(1, name);
             pstmt.execute();
         } catch (SQLException e) {
             e.printStackTrace();
