@@ -1,4 +1,4 @@
-package org.kosa.caloriecounterdesktop;
+package org.kosa.caloriecounterdesktop.model;
 
 import java.sql.ResultSet;
 
