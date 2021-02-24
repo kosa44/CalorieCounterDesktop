@@ -88,10 +88,11 @@ public class FoodDatabaseSQLite implements FoodDatabaseInterface {
         // check for database table
         ArrayListFoodData foodArray = new ArrayListFoodData();
         foodArray.createDatabase();
+        System.out.println(foodArray.getData().get(0));
+        boolean formerAutoCommitMode = conn.getAutoCommit();
         Statement state = conn.createStatement();
         ResultSet res = state.executeQuery(
                 "SELECT name FROM sqlite_master WHERE type='table' AND name='CalorieCounterProducts'");
-        System.out.println("ResultSet: "+res.toString());
         if (!res.next()) {
             System.out.println("Building the CalorieCounterProducts table with pre-populated values.");
             // need to build the table
@@ -101,16 +102,14 @@ public class FoodDatabaseSQLite implements FoodDatabaseInterface {
                         + "protein real," + "fats real," + "carbohydrates real," + "calories real," + "grams real,"
                         + "primary key (id));");
                 conn.commit();
-                if (!hasData()) {
-                    insertInitialData();
-                }
             } catch (SQLException e) {
                 conn.rollback();
                 System.out.println("Transaction is being rolled back");
                 e.printStackTrace();
             }
+            conn.setAutoCommit(formerAutoCommitMode);
         }
-        if (!hasData()) {
+        if (hasData() == false) {
             insertInitialData();
         }
     }
@@ -163,12 +162,11 @@ public class FoodDatabaseSQLite implements FoodDatabaseInterface {
             Statement state = conn.createStatement();
             ResultSet res = state.executeQuery(
                     "SELECT * FROM CalorieCounterProducts");
+            System.out.println(res.getRow());
             if (!res.next()) {
-                System.out.print("db empty");
                 return false;
             }
             if (res.next()) {
-                System.out.println(res.getRow());
                 return true;
             }
         } catch (SQLException e) {
