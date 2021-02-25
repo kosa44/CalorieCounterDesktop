@@ -1,5 +1,6 @@
 package org.kosa.caloriecounterdesktop.model;
 
+import java.io.File;
 import java.sql.*;
 
 public class CalorieCounterModel implements CalorieCounterModelInterface {
@@ -63,13 +64,21 @@ public class CalorieCounterModel implements CalorieCounterModelInterface {
 
     @Override
     public void addSessionName(String name) {
-        try {
-            Connection conn = DriverManager.getConnection(sessionNamesURL);
-            PreparedStatement pstmt = conn.prepareStatement("INSERT INTO SessionNames(name) values(?);");
-            pstmt.setString(1, name);
-            pstmt.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        try (Connection conn = DriverManager.getConnection(sessionNamesURL)) {
+            boolean formerAutoCommitMode = conn.getAutoCommit();
+            conn.setAutoCommit(false);
+            try (PreparedStatement pstmt = conn.prepareStatement("INSERT INTO SessionNames(name) values(?)")) {
+                pstmt.setString(1, name);
+                pstmt.execute();
+                conn.commit();
+            } catch (SQLException e) {
+                System.out.println("Failed to add new session, transaction is being rolled back");
+                conn.rollback();
+                e.printStackTrace();
+            }
+            conn.setAutoCommit(formerAutoCommitMode);
+        } catch (SQLException e2) {
+            e2.printStackTrace();
         }
     }
 
@@ -87,11 +96,24 @@ public class CalorieCounterModel implements CalorieCounterModelInterface {
 
     @Override
     public void removeSessionName(String name) {
-        try {
-            Connection conn = DriverManager.getConnection(sessionNamesURL);
-            PreparedStatement pstmt = conn.prepareStatement("DELETE FROM SessionNames WHERE name = ?");
-            pstmt.setString(1, name);
-            pstmt.execute();
+        try (Connection conn = DriverManager.getConnection(sessionNamesURL)) {
+            boolean formerAutoCommitMode = conn.getAutoCommit();
+            conn.setAutoCommit(false);
+            File file = new File("/"+name+".db");
+            try (PreparedStatement pstmt = conn.prepareStatement("DELETE FROM SessionNames WHERE name = ?")) {
+                if (file.delete()) {
+                    pstmt.setString(1,name);
+                    pstmt.execute();
+                    conn.commit();
+                } else {
+                    System.out.println("Failed to delete file "+name);
+                }
+            } catch (SQLException e) {
+                System.out.println("Failed to remove session, transaction is being rolled back");
+                conn.rollback();
+                e.printStackTrace();
+            }
+            conn.setAutoCommit(formerAutoCommitMode);
         } catch (SQLException e) {
             e.printStackTrace();
         }
