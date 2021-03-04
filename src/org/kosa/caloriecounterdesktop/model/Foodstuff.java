@@ -1,4 +1,4 @@
-package org.kosa.caloriecounterdesktop;
+package org.kosa.caloriecounterdesktop.model;
 
 import java.io.Serializable;
 
@@ -12,7 +12,7 @@ public class Foodstuff implements Comparable<Foodstuff>, Serializable {
     private double calories;
     private double grams;
 
-    Foodstuff(String name, double protein, double fat, double carbohydrates, double calories, double grams) {
+    public Foodstuff(String name, double protein, double fat, double carbohydrates, double calories, double grams) {
         this.name = name;
         this.protein = protein;
         this.fat = fat;
@@ -71,26 +71,20 @@ public class Foodstuff implements Comparable<Foodstuff>, Serializable {
 
     @Override
     public int compareTo(Foodstuff food) {
-        for (int i = 0; i < this.getName().length(); i++) {
-            if (this.getName().charAt(i) > ((Foodstuff) food).getName().charAt(i)) {
-                return 1;
-            } else if (this.getName().charAt(i) < ((Foodstuff) food).getName().charAt(i)) {
-                return -1;
-            }
-        }
-        return 0;
+        return this.getName().compareTo(food.getName());
     }
 
     @Override
     public String toString() {
-        return "Foodstuff{" +
-                "name='" + name + '\'' +
-                ", protein=" + protein +
-                ", fat=" + fat +
-                ", carbohydrates=" + carbohydrates +
-                ", calories=" + calories +
-                ", grams=" + grams +
-                '}';
+        StringBuilder sb = new StringBuilder();
+        sb.append("Foodstuff{").append(getName()).append('\'');
+        sb.append(", name=").append(getName());
+        sb.append(", protein=").append(getProtein());
+        sb.append(", fat=").append(getFat());
+        sb.append(", carbohydrates=").append(getCarbohydrates());
+        sb.append(", calories=").append(getCalories());
+        sb.append(", grams=").append(getGrams()).append('}');
+        return sb.toString();
     }
 }
 
