@@ -1,4 +1,4 @@
-package org.kosa.caloriecounterdesktop;
+package org.kosa.caloriecounterdesktop.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -295,11 +295,11 @@ public class CalorieCounterView {
         // sum new values present in the sessionTable
         for (int columns = 1; columns < sessionTable.getColumnCount(); columns++) {
             double sum = 0;
-            for (int rows = 0; rows < sessionTable.getRowCount(); rows++) {
-                double temp = (Double) sessionTable.getValueAt(rows, columns);
-                sum = sum + temp;
+                for (int rows = 0; rows < sessionTable.getRowCount(); rows++) {
+                    sum += (Double) sessionTable.getValueAt(rows, columns);
+                }
+
                 sumTable.setValueAt(df2.format(sum).replace(',', '.'), 0, columns);
-            }
         }
     }
 
