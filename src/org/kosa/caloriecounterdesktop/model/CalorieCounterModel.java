@@ -1,14 +1,11 @@
 package org.kosa.caloriecounterdesktop.model;
 
-import com.google.gson.internal.bind.SqlDateTypeAdapter;
-
 import java.io.File;
 import java.sql.*;
 
 public class CalorieCounterModel implements CalorieCounterModelInterface {
     private FoodDatabaseInterface foodstuffsData;
     private final String sessionNamesURL = "jdbc:sqlite:SessionNames.db";
-    private static boolean hasData = false;
 
     public CalorieCounterModel(FoodDatabaseInterface foodstuffsData) {
         this.foodstuffsData = foodstuffsData;
