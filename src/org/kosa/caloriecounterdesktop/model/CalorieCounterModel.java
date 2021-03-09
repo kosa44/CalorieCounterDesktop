@@ -105,7 +105,7 @@ public class CalorieCounterModel implements CalorieCounterModelInterface {
         try (Connection conn = DriverManager.getConnection(sessionNamesURL)) {
             boolean formerAutoCommitMode = conn.getAutoCommit();
             conn.setAutoCommit(false);
-            File file = new File("/" + name + ".db");
+            File file = new File( name + ".db");
             try (PreparedStatement pstmt = conn.prepareStatement("DELETE FROM SessionNames WHERE name = ?")) {
                 if (file.delete()) {
                     pstmt.setString(1, name);
